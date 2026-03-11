@@ -29,6 +29,12 @@ pending_removals: Dict[str, asyncio.Task] = {}      # f"{code}:{session_id}" -> 
 VAPID_KEYS_FILE = "vapid_keys.json"
 
 def load_or_create_vapid_keys() -> dict:
+    # Prefer environment variables (used in production on Railway)
+    env_private = os.environ.get("VAPID_PRIVATE_KEY")
+    env_public  = os.environ.get("VAPID_PUBLIC_KEY")
+    if env_private and env_public:
+        return {"private_pem": env_private.replace("\\n", "\n"), "public_key": env_public}
+
     if os.path.exists(VAPID_KEYS_FILE):
         with open(VAPID_KEYS_FILE) as f:
             return json.load(f)
@@ -71,7 +77,9 @@ def members_list(lobby: dict) -> list:
 
 
 def send_push_to_lobby(code: str, payload: dict):
-    for sub in push_subs.get(code, []):
+    subs = push_subs.get(code, [])
+    print(f"[PUSH] Sending to {len(subs)} subscriber(s) in lobby {code}")
+    for sub in subs:
         try:
             webpush(
                 subscription_info=sub,
@@ -79,8 +87,9 @@ def send_push_to_lobby(code: str, payload: dict):
                 vapid_private_key=vapid_keys["private_pem"],
                 vapid_claims={"sub": "mailto:barout@barout.app"},
             )
-        except WebPushException:
-            pass
+            print(f"[PUSH] Sent OK")
+        except WebPushException as e:
+            print(f"[PUSH] Error: {e}")
 
 
 async def remove_member(code: str, session_id: str, reason: str):

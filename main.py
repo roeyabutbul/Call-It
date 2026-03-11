@@ -11,7 +11,7 @@ import asyncio
 from datetime import datetime
 from typing import Optional, Dict, List
 from cryptography.hazmat.primitives.asymmetric.ec import generate_private_key, SECP256R1
-from cryptography.hazmat.primitives.serialization import Encoding, PrivateFormat, PublicFormat, NoEncryption
+from cryptography.hazmat.primitives.serialization import Encoding, PrivateFormat, PublicFormat, NoEncryption, load_pem_private_key
 import base64
 from pywebpush import webpush, WebPushException
 
@@ -33,7 +33,12 @@ def load_or_create_vapid_keys() -> dict:
     env_private = os.environ.get("VAPID_PRIVATE_KEY")
     env_public  = os.environ.get("VAPID_PUBLIC_KEY")
     if env_private and env_public:
-        return {"private_pem": env_private.replace("\\n", "\n"), "public_key": env_public}
+        # Normalize line endings (Railway may store \n as literal backslash-n)
+        pem_str = env_private.replace("\\r\\n", "\n").replace("\\n", "\n").replace("\\r", "\n")
+        # Re-serialize to guarantee a clean PEM with correct formatting
+        key_obj = load_pem_private_key(pem_str.encode(), password=None)
+        clean_pem = key_obj.private_bytes(Encoding.PEM, PrivateFormat.TraditionalOpenSSL, NoEncryption()).decode()
+        return {"private_pem": clean_pem, "public_key": env_public}
 
     if os.path.exists(VAPID_KEYS_FILE):
         with open(VAPID_KEYS_FILE) as f:

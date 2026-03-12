@@ -14,6 +14,7 @@ from cryptography.hazmat.primitives.asymmetric.ec import generate_private_key, S
 from cryptography.hazmat.primitives.serialization import Encoding, PrivateFormat, PublicFormat, NoEncryption, load_pem_private_key
 import base64
 from pywebpush import webpush, WebPushException
+from py_vapid import Vapid
 
 app = FastAPI()
 
@@ -59,6 +60,7 @@ def load_or_create_vapid_keys() -> dict:
     return keys
 
 vapid_keys = load_or_create_vapid_keys()
+vapid_instance = Vapid.from_pem(vapid_keys["private_pem"].encode())
 
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
@@ -89,7 +91,7 @@ def send_push_to_lobby(code: str, payload: dict):
             webpush(
                 subscription_info=sub,
                 data=json.dumps(payload),
-                vapid_private_key=vapid_keys["private_pem"],
+                vapid_private_key=vapid_instance,
                 vapid_claims={"sub": "mailto:barout@barout.app"},
             )
             print(f"[PUSH] Sent OK")

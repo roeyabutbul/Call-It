@@ -373,7 +373,7 @@ function handleWS(msg) {
         state.sessionId = null;
         if (state.ws) { state.ws.close(); state.ws = null; }
         if (state.pingInterval) { clearInterval(state.pingInterval); state.pingInterval = null; }
-        alert(msg.reason === "kicked" ? "You were removed from the lobby." : "You have left the lobby.");
+        if (msg.reason === "kicked") alert("You were removed from the lobby.");
         showScreen("screen-home");
         return;
       }

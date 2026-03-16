@@ -58,6 +58,7 @@ window.addEventListener("load", () => {
   if (codeFromUrl) {
     document.getElementById("join-code").value = codeFromUrl.toUpperCase();
     showScreen("screen-join");
+    document.getElementById("join-name").focus();
     return;
   }
 
@@ -240,12 +241,12 @@ function renderVoteButton() {
   } else if (state.lobbyStatus === "threshold_reached") {
     // Lobby is done but this person didn't vote
     btn.disabled = true;
-    btn.innerHTML = '<span class="vote-icon">🚪</span><span class="vote-text">Call It</span>';
+    btn.innerHTML = '<span class="vote-icon">🚪</span><span class="vote-text">Call It!</span>';
     status.classList.add("hidden");
     cancelBtn.classList.add("hidden");
   } else {
     btn.disabled = false;
-    btn.innerHTML = '<span class="vote-icon">🚪</span><span class="vote-text">Call It</span>';
+    btn.innerHTML = '<span class="vote-icon">🚪</span><span class="vote-text">Call It!</span>';
     status.classList.add("hidden");
     cancelBtn.classList.add("hidden");
   }

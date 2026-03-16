@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>BarOut</title>
+  <title>CallIt</title>
   <link rel="stylesheet" href="style.css" />
   <meta name="theme-color" content="#0f0f1a" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -15,12 +15,12 @@
   <div id="screen-home" class="screen active">
     <div class="logo">
       <div class="logo-icon">🍺</div>
-      <h1>BarOut</h1>
-      <p class="tagline">Know when your crew is ready to leave</p>
+      <h1>CallIt</h1>
+      <p class="tagline">When your crew is ready to go, call it</p>
     </div>
     <div class="actions">
-      <button class="btn btn-primary" onclick="showScreen('screen-create')">Create Lobby</button>
-      <button class="btn btn-secondary" onclick="showScreen('screen-join')">Join Lobby</button>
+      <button class="btn btn-primary" onclick="showScreen('screen-create')">Start a Session</button>
+      <button class="btn btn-secondary" onclick="showScreen('screen-join')">Join a Session</button>
     </div>
   </div>
 
@@ -28,24 +28,24 @@
   <div id="screen-create" class="screen">
     <div class="screen-header">
       <button class="btn-back" onclick="showScreen('screen-home')">←</button>
-      <h2>Create Lobby</h2>
+      <h2>Start a Session</h2>
     </div>
     <div class="form-group">
       <label>Your name <span class="optional">(optional)</span></label>
       <input type="text" id="create-name" placeholder="e.g. Alex" maxlength="20" />
     </div>
-    <p class="hint">You can set the "ready to leave" threshold once everyone has joined.</p>
-    <button class="btn btn-primary" onclick="createLobby()">Create Lobby</button>
+    <p class="hint">You can set how many people need to call it before everyone gets notified.</p>
+    <button class="btn btn-primary" onclick="createLobby()">Let's Go</button>
   </div>
 
   <!-- ── JOIN ──────────────────────────────────────────────────── -->
   <div id="screen-join" class="screen">
     <div class="screen-header">
       <button class="btn-back" onclick="showScreen('screen-home')">←</button>
-      <h2>Join Lobby</h2>
+      <h2>Join a Session</h2>
     </div>
     <div class="form-group">
-      <label>Lobby Code</label>
+      <label>Session Code</label>
       <input type="text" id="join-code" placeholder="ABC123" maxlength="6"
              class="code-input" autocomplete="off" />
     </div>
@@ -70,21 +70,21 @@
     </div>
 
     <div class="members-section">
-      <h3 class="section-label">In the bar <span id="member-count" class="badge">0</span></h3>
+      <h3 class="section-label">The crew <span id="member-count" class="badge">0</span></h3>
       <div id="member-list" class="member-list"></div>
     </div>
 
     <div class="threshold-card">
       <div class="threshold-row">
         <span class="threshold-text">
-          Notify when <strong id="threshold-value">–</strong> of <strong id="threshold-total">–</strong> people are ready
+          Call it when <strong id="threshold-value">–</strong> of <strong id="threshold-total">–</strong> are ready
           <span id="threshold-mode-tag" class="mode-tag"></span>
         </span>
       </div>
       <div id="creator-controls" class="creator-controls hidden">
         <span class="admin-badge">👑 You're the admin</span>
         <button class="btn-small" onclick="toggleThresholdEdit()">✏️ Edit threshold</button>
-        <button class="btn-small btn-close-lobby" onclick="closeLobby()">🔴 Close Lobby</button>
+        <button class="btn-small btn-close-lobby" onclick="closeLobby()">🔴 End Session</button>
       </div>
       <div id="threshold-edit" class="threshold-edit hidden">
         <div class="threshold-edit-row">
@@ -98,11 +98,11 @@
     <div class="vote-section">
       <button id="vote-btn" class="btn btn-vote" onclick="castVote()">
         <span class="vote-icon">🚪</span>
-        <span class="vote-text">I'm Ready to Leave</span>
+        <span class="vote-text">Call It</span>
       </button>
-      <p id="vote-status" class="vote-status hidden">✓ You're ready — waiting for the others...</p>
-      <button id="cancel-vote-btn" class="btn btn-cancel-vote hidden" onclick="cancelVote()">Cancel my vote</button>
-      <button class="btn btn-leave" onclick="leaveLobby()">Leave Lobby</button>
+      <p id="vote-status" class="vote-status hidden">✓ You called it — waiting for the crew...</p>
+      <button id="cancel-vote-btn" class="btn btn-cancel-vote hidden" onclick="cancelVote()">Take it back</button>
+      <button class="btn btn-leave" onclick="leaveLobby()">Leave Session</button>
     </div>
 
   </div>
@@ -111,9 +111,9 @@
   <div id="overlay" class="overlay hidden">
     <div class="overlay-content">
       <div class="overlay-icon">🎉</div>
-      <h2>Time to Go!</h2>
-      <p>Enough people are ready to leave!</p>
-      <button class="btn btn-primary" onclick="dismissOverlay()">Got it!</button>
+      <h2>It's Called!</h2>
+      <p>Your crew is ready — time to go!</p>
+      <button class="btn btn-primary" onclick="dismissOverlay()">Let's Go!</button>
     </div>
   </div>
 

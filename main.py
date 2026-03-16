@@ -159,7 +159,7 @@ async def remove_member(code: str, session_id: str, reason: str):
         })
         asyncio.get_event_loop().run_in_executor(
             None, send_push_to_lobby, code,
-            {"title": "BarOut 🎉", "body": "Time to Go! Your crew is ready to leave."}
+            {"title": "CallIt 🎉", "body": "It's called! Your crew is ready to go."}
         )
 
 
@@ -292,7 +292,7 @@ async def cast_vote(code: str, session_id: str):
         })
         asyncio.get_event_loop().run_in_executor(
             None, send_push_to_lobby, code,
-            {"title": "BarOut 🎉", "body": "Time to Go! Your crew is ready to leave."}
+            {"title": "CallIt 🎉", "body": "It's called! Your crew is ready to go."}
         )
 
     return {"voted": True}
@@ -390,7 +390,7 @@ async def update_threshold(code: str, req: ThresholdRequest):
         })
         asyncio.get_event_loop().run_in_executor(
             None, send_push_to_lobby, code,
-            {"title": "BarOut 🎉", "body": "Time to Go! Your crew is ready to leave."}
+            {"title": "CallIt 🎉", "body": "It's called! Your crew is ready to go."}
         )
 
     return {"threshold": t}

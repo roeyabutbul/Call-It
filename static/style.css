@@ -48,7 +48,7 @@ body {
 }
 .logo-icon {
   font-size: 4.5rem;
-  filter: drop-shadow(0 0 24px rgba(245,158,11,0.5));
+  filter: drop-shadow(0 0 6px rgba(245,158,11,0.2));
   animation: float 3s ease-in-out infinite;
 }
 @keyframes float {

@@ -61,12 +61,12 @@ window.addEventListener("load", () => {
     return;
   }
 
-  const saved = localStorage.getItem("barout_session");
+  const saved = localStorage.getItem("callit_session");
   if (saved) {
     try {
       rejoinLobby(JSON.parse(saved));
     } catch {
-      localStorage.removeItem("barout_session");
+      localStorage.removeItem("callit_session");
     }
   }
 });
@@ -77,7 +77,7 @@ async function rejoinLobby(session) {
     if (!res.ok) throw new Error();
     const data = await res.json();
     if (data.status === "threshold_reached") {
-      localStorage.removeItem("barout_session");
+      localStorage.removeItem("callit_session");
       return; // stay on home screen
     }
     state.code      = session.code;
@@ -89,7 +89,7 @@ async function rejoinLobby(session) {
     connectWS();
     registerPush(session.code);
   } catch {
-    localStorage.removeItem("barout_session");
+    localStorage.removeItem("callit_session");
   }
 }
 
@@ -186,7 +186,7 @@ function renderLobby(data) {
 
   // Show overlay if needed
   if (data.status === "threshold_reached") {
-    const dismissed = JSON.parse(localStorage.getItem("barout_dismissed") || "{}");
+    const dismissed = JSON.parse(localStorage.getItem("callit_dismissed") || "{}");
     if (!dismissed[state.code]) showOverlay();
   }
 }
@@ -229,7 +229,7 @@ function renderVoteButton() {
 
   if (state.hasVoted) {
     btn.disabled = true;
-    btn.innerHTML = '<span class="vote-icon">✓</span><span class="vote-text">You\'re Ready</span>';
+    btn.innerHTML = '<span class="vote-icon">✓</span><span class="vote-text">Called It</span>';
     status.classList.remove("hidden");
     // Can only cancel if lobby is still active
     if (state.lobbyStatus === "active") {
@@ -240,12 +240,12 @@ function renderVoteButton() {
   } else if (state.lobbyStatus === "threshold_reached") {
     // Lobby is done but this person didn't vote
     btn.disabled = true;
-    btn.innerHTML = '<span class="vote-icon">🚪</span><span class="vote-text">I\'m Ready to Leave</span>';
+    btn.innerHTML = '<span class="vote-icon">🚪</span><span class="vote-text">Call It</span>';
     status.classList.add("hidden");
     cancelBtn.classList.add("hidden");
   } else {
     btn.disabled = false;
-    btn.innerHTML = '<span class="vote-icon">🚪</span><span class="vote-text">I\'m Ready to Leave</span>';
+    btn.innerHTML = '<span class="vote-icon">🚪</span><span class="vote-text">Call It</span>';
     status.classList.add("hidden");
     cancelBtn.classList.add("hidden");
   }
@@ -283,7 +283,7 @@ async function cancelVote() {
 
 // ── Leave / Kick ──────────────────────────────────────────────
 function goHome() {
-  localStorage.removeItem("barout_session");
+  localStorage.removeItem("callit_session");
   state.code = null;
   state.sessionId = null;
   state.isCreator = false;
@@ -433,9 +433,9 @@ function showOverlay() {
 function dismissOverlay() {
   document.getElementById("overlay").classList.add("hidden");
   if (state.code) {
-    const dismissed = JSON.parse(localStorage.getItem("barout_dismissed") || "{}");
+    const dismissed = JSON.parse(localStorage.getItem("callit_dismissed") || "{}");
     dismissed[state.code] = true;
-    localStorage.setItem("barout_dismissed", JSON.stringify(dismissed));
+    localStorage.setItem("callit_dismissed", JSON.stringify(dismissed));
   }
 }
 
@@ -444,9 +444,9 @@ function dismissOverlay() {
 function hideOverlay() {
   document.getElementById("overlay").classList.add("hidden");
   if (state.code) {
-    const dismissed = JSON.parse(localStorage.getItem("barout_dismissed") || "{}");
+    const dismissed = JSON.parse(localStorage.getItem("callit_dismissed") || "{}");
     delete dismissed[state.code];
-    localStorage.setItem("barout_dismissed", JSON.stringify(dismissed));
+    localStorage.setItem("callit_dismissed", JSON.stringify(dismissed));
   }
 }
 
@@ -458,7 +458,7 @@ function copyCode(btn) {
 function shareLink(btn) {
   const url = `${location.origin}?code=${state.code}`;
   if (navigator.share) {
-    navigator.share({ title: "Join my BarOut lobby!", text: `Code: ${state.code}`, url });
+    navigator.share({ title: "Join my CallIt session!", text: `Code: ${state.code}`, url });
   } else {
     navigator.clipboard.writeText(url).then(() => flash(btn, "✓", "🔗"));
   }
@@ -471,7 +471,7 @@ function flash(btn, temp, restore) {
 
 // ── Persistence ───────────────────────────────────────────────
 function saveSession() {
-  localStorage.setItem("barout_session", JSON.stringify({
+  localStorage.setItem("callit_session", JSON.stringify({
     code:      state.code,
     sessionId: state.sessionId,
     isCreator: state.isCreator,

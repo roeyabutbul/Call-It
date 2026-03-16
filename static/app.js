@@ -55,7 +55,22 @@ function urlBase64ToUint8Array(base64String) {
 window.addEventListener("load", () => {
   const params = new URLSearchParams(window.location.search);
   const codeFromUrl = params.get("code");
+
   if (codeFromUrl) {
+    const saved = localStorage.getItem("callit_session");
+    if (saved) {
+      try {
+        const session = JSON.parse(saved);
+        if (session.code === codeFromUrl.toUpperCase()) {
+          // Already in this lobby — rejoin instead of creating a duplicate
+          rejoinLobby(session);
+          return;
+        }
+      } catch {
+        localStorage.removeItem("callit_session");
+      }
+    }
+    // No existing session for this lobby — show join form
     document.getElementById("join-code").value = codeFromUrl.toUpperCase();
     showScreen("screen-join");
     document.getElementById("join-name").focus();
